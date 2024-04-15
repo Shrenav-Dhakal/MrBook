@@ -15,11 +15,19 @@ os.getenv("OPENAI_API_KEY")
 
 api = os.getenv("GOOGLE_API_KEY")
 
-def send_data(output: str):
+final_name = ""
+
+def send_name(pdf):
+    global final_name
+    name = pdf.split("\\")[-1][:-4]
+    name = name.split(" ")
+    final_name = "".join(name)
+
+def send_data(output: str, temp: int = 0):
     model = genai.ChatGoogleGenerativeAI(
         google_api_key=api,
         model="gemini-1.0-pro",
-        temperature=0.2
+        temperature=temp
     )
 
 
@@ -39,7 +47,7 @@ def send_data(output: str):
 
     embeddings = HuggingFaceEmbeddings(model_name = 'sentence-transformers/all-MiniLM-L6-v2')
 
-    db = Chroma(persist_directory="chrom1", embedding_function=embeddings)
+    db = Chroma(persist_directory="chrom1", embedding_function=embeddings,collection_name=final_name)
 
     prompt = ChatPromptTemplate.from_template(template=template)
 
