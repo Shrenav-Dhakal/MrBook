@@ -4,17 +4,20 @@ from langchain.vectorstores.chroma import Chroma
 from dotenv import load_dotenv
 load_dotenv()
 import os 
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 
-pdfname = r"C:\Users\Shreenav Dhakal\OneDrive\Desktop\Attention is all you need.pdf"
+embeddings = HuggingFaceEmbeddings(model_name = "sentence-transformers/all-MiniLM-L6-v2")
 
-loader = PyMuPDFLoader(pdfname)
-pages = loader.load_and_split()
-
-print(pages[0])
-chromadb = Chroma.from_documents(pages, OpenAIEmbeddings(), persist_directory="chrom1")
-
+def create(pdf):
+    name = pdf.split("\\")[-1][:-4]
+    name = name.split(" ")
+    final_name = "".join(name)
+    print(final_name)
+    loader = PyMuPDFLoader(pdf)
+    pages = loader.load_and_split()
+    chromadb = Chroma.from_documents(pages, embedding=embeddings, persist_directory="chrom1", collection_name=final_name)
 
 
 

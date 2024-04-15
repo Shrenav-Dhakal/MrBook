@@ -5,7 +5,26 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 import assemblyai as aai
+from create_chroma import create
+
+
 aai.settings.api_key = os.getenv("ASSEMBLY_API_KEY")
+
+st.title("Mr Book")
+
+uploaded_file = st.file_uploader("Upload your pdf", type='pdf')
+
+
+
+if st.button("Submit"):
+    with st.spinner("Processing....Please Wait"):
+        if uploaded_file is not None:
+            filename = os.path.basename(uploaded_file.name)
+            savepath = os.path.join("uploaded_files",filename)
+            with open(savepath, "wb") as f:
+                f.write(uploaded_file.getvalue())
+            create(savepath)
+         
 
 
 audio_bytes = audio_recorder()
