@@ -1,6 +1,6 @@
 from langchain.document_loaders import PyMuPDFLoader
-from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores.chroma import Chroma
+from langchain.embeddings import OpenAIEmbeddings
 from dotenv import load_dotenv
 load_dotenv()
 import os 
