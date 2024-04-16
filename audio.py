@@ -6,11 +6,15 @@ from dotenv import load_dotenv
 load_dotenv()
 import assemblyai as aai
 from create_chroma import create
+import translators as ts
 
 
 aai.settings.api_key = os.getenv("ASSEMBLY_API_KEY")
 
 st.title("Mr Book")
+
+
+language = st.selectbox(label="Choose Your Language", options=['en', 'fr', 'hi'])
 
 uploaded_file = st.file_uploader("Upload your pdf", type='pdf')
 
@@ -35,9 +39,13 @@ if audio_bytes:
 
 
 def getdata():
-    transcriber = aai.Transcriber()
+    config = aai.TranscriptionConfig(language_code=language)
+    transcriber = aai.Transcriber(config=config)
     transcript = transcriber.transcribe("audio.mp3")
-    send_data(output=transcript.text,temp=temperature)
+    print("transcribed text = ", transcript.text)
+    new_text = ts.translate_text(transcript.text, from_language="auto", to_language="en")
+    print("New Text =", new_text)
+    send_data(output=new_text,temp=temperature,lang=language)
 
 
 button = st.button("Click here to get answer", on_click=getdata)

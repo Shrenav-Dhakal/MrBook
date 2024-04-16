@@ -190,6 +190,7 @@ torch==2.2.2
 tornado==6.4
 tqdm==4.66.2
 traitlets==5.14.2
+translators==5.9.1
 transformers==4.39.3
 typer==0.12.3
 typing-inspect==0.9.0

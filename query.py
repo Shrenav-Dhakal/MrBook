@@ -9,6 +9,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
 from langchain.schema.runnable import RunnableMap
 from langchain_community.embeddings import HuggingFaceEmbeddings
+import translators as ts
 
 os.getenv("OPENAI_API_KEY")
 
@@ -23,7 +24,7 @@ def send_name(pdf):
     name = name.split(" ")
     final_name = "".join(name)
 
-def send_data(output: str, temp: int = 0):
+def send_data(output: str, temp: int = 0, lang:str="en"):
     model = genai.ChatGoogleGenerativeAI(
         google_api_key=api,
         model="gemini-1.0-pro",
@@ -59,7 +60,18 @@ def send_data(output: str, temp: int = 0):
     ) | prompt | model | StrOutputParser()
 
     answer = chain.invoke({'question':output})
-    tts = gTTS(text=answer)
+    print("Answer: ", answer)
+
+    if lang=="hi":
+        accent = "co.in"
+    elif lang=="fr":
+        accent = "fr"
+    elif lang=="en":
+        accent="us"
+
+    final_answer = ts.translate_text(answer, from_language="auto", to_language=lang)
+    print("Final text = ",final_answer)
+    tts = gTTS(text=final_answer, tld=accent)
     tts.save("upload/a.mp3")
 
 
